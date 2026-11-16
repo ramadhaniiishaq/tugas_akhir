@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Profil{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/profile.css')}}">
+
+<h2 class="page-title">⚙️ Profil</h2>
+
+<div class="grid grid-3">
+  <div class="card">
+    <h3 style="margin-top:0;color:#091540;">Informasi Akun</h3>
+    <table>
+      <tr><td style="width:90px;color:#7a86a8;">Nama</td><td><b>{{ data.name if role=='admin' else data.nama }}</b></td></tr>
+      <tr><td style="color:#7a86a8;">Jabatan</td><td>{{ data.jabatan }}</td></tr>
+      <tr><td style="color:#7a86a8;">Role</td><td><span class="badge" style="background:#eef1ff;color:#1B2CC1;">{{ role }}</span></td></tr>
+      {% if role == 'admin' %}
+      <tr><td style="color:#7a86a8;">Username</td><td>{{ data.username }}</td></tr>
+      {% else %}
+      <tr><td style="color:#7a86a8;">Status</td><td><span class="badge badge-{{ data.status }}">{{ data.status }}</span></td></tr>
+      {% endif %}
+    </table>
+  </div>
+
+  <div class="card" style="grid-column: span 2;">
+    <h3 style="margin-top:0;color:#091540;">🔒 Ubah Password</h3>
+    <form method="POST" action="{{ url_for('profile') }}">
+      <div class="form-row">
+        <label class="label">Password Baru</label>
+        <input type="password" name="password" required minlength="4">
+      </div>
+      <button class="btn btn-primary" type="submit">Simpan Password</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

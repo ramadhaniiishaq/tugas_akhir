@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Manajemen User{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="../static/css/admin/user.css">
+
+<h2 class="page-title title">Manajemen User</h2>
+
+<div class="grid grid-4 item">
+  <div class="stat" style="background: linear-gradient(135deg, #1B2CC1, #2333c2, black); "><span><i class="bi bi-person-fill"></i></span><div class="text"><h3>{{ semua }}</h3><p>Total User</p></div></div>
+  <div class="stat" style="background:linear-gradient(135deg,#1fbf73,#0e7a48,black);"><span><i class="bi bi-person-fill-check"></i></span><div class="text"><h3>{{ aktif }}</h3><p>Aktif</p></div></div>
+  <div class="stat" style="background:linear-gradient(135deg,#e63946,#8b0e1a,black);"><span><i class="bi bi-person-fill-slash"></i></span><div class="text"><h3>{{ nonaktif }}</h3><p>Nonaktif</p></div></div>
+</div>
+
+  <div class="grid grid-3 user">
+    <div class="card tambah">
+      <h3 style="margin-top:0;color:#091540;">➕ Tambah User</h3>
+      <form method="POST" action="{{ url_for('user') }}">
+        <div class="form-column">
+          <label class="label">Nama</label>
+          <input type="text" name="nama" placeholder="masukkan nama..." required>
+        </div>
+        <div class="form-column">
+          <label class="label">Password</label>
+          <input type="password" name="password" placeholder="masukkan password..." required>
+        </div>
+        <div class="form-column">
+          <label class="label">Jabatan</label>
+          <input type="text" name="jabatan" placeholder="masukkan jabatan..." required>
+        </div>
+        <button class="btn btn-primary" type="submit"><i class="bi bi-plus-lg"></i>Tambah</button>
+      </form>
+    </div>
+    <div class="card daftar" style="grid-column: span 2;">
+      <div class="search" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h3 style="margin:0;color:#091540;">📋 Daftar User</h3>
+        <input type="text" placeholder="Cari user..." data-search="#tbl-user" style="max-width:200px;">
+      </div>
+      <table id="tbl-user" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Jabatan</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in use %}
+          <tr>
+            <td>{{ u.nama }}</td>
+            <td>{{ u.jabatan }}</td>
+            <td><span class="badge">
+              {% if u.status == 'aktif' %}
+                <span style="color: green; font-weight: bold;">aktif</span>
+                {% elif u.status == 'nonaktif' %}
+                <span style="color: red; font-weight: bold;">nonaktif</span>
+                {% else %}
+                <span>tidak ada</span>
+                {% endif %}
+            </span></td>
+            <td>
+              <form method="POST" action="{{ url_for('aksi', id=u.id) }}" style="display:inline;">
+                  {% if u.status=='aktif' %}
+                  <button type="submit"class="btn-nonaktif">nonaktifkan</button>
+                  {% else %}
+                  <button type="submit" class="btn-aktif">aktifkan</button>
+                  {% endif %}
+                </button>
+              </form>
+              <form method="POST" action="{{ url_for('user_delete', id=u.id) }}" style="display:inline;"
+                    data-confirm="Hapus user {{ u.nama }}? Semua folder & file akan hilang!">
+                <button class="btn btn-nonaktif" type="submit">Hapus</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" style="text-align:center;color:#7a86a8;">Belum ada user.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+{% endblock %}

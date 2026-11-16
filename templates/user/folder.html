@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Folder Saya{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/user/folder.css')}}">
+<h2 class="page-title" style="margin-bottom: 20px;">📂 Folder Saya</h2>
+
+<div class="card" style="margin-bottom:20px;">
+  <form method="POST" action="{{ url_for('folder') }}" style="display:flex;gap:10px;">
+    <input type="text" name="nama" placeholder="Nama folder baru..." required style="flex:1;">
+    <button class="btn btn-primary" type="submit">➕ Buat</button>
+  </form>
+</div>
+
+<div class="grid grid-4">
+  {% for f in folders %}
+  <div class="folder-card">
+    <div class="folder-icon">📁</div>
+    <a href="{{ url_for('folder_detail', id=f.id) }}" style="text-decoration:none;color:inherit;">
+      <div class="folder-name">{{ f.nama }}</div>
+      <div class="folder-meta">{{ f.jumlah_file }} file • {{ f.tanggal.strftime('%d-%m-%Y') if f.tanggal else '-' }}</div>
+    </a>
+    <div class="row-actions">
+      <a href="{{ url_for('folder_detail', id=f.id) }}" class="btn btn-outline btn-sm">Buka</a>
+      <form method="POST" action="{{ url_for('folder_delete', id=f.id) }}" data-confirm="Hapus folder {{ f.nama }}? Semua file di dalamnya akan ikut terhapus!">
+        <button class="btn btn-danger btn-sm" type="submit">Hapus</button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <div class="card" style="grid-column:1/-1;text-align:center;color:#7a86a8;">
+    Belum ada folder. Buat yang pertama di atas ☝️
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

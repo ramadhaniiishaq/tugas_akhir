@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ folder.nama }} — Sistem Arsip{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/user/foldetail.css')}}">
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px;">
+  <div>
+    <a href="{{ url_for('folder') }}" class="back-link">
+        <span class="arrow">←</span>
+        Kembali ke Folder
+    </a>
+    <h2 class="page-title" style="margin:5px 0 0;">📁 {{ folder.nama }}</h2>
+  </div>
+  <form method="POST" action="{{ url_for('folder_rename', id=folder.id) }}" style="display:flex;gap:6px;">
+    <input type="text" name="nama" value="{{ folder.nama }}" required style="width:180px;">
+    <button class="btn btn-outline btn-sm" type="submit">Rename</button>
+  </form>
+</div>
+
+<!-- Upload -->
+<div class="card" style="margin-bottom:20px;">
+  <form method="POST" action="{{ url_for('file_upload', id=folder.id) }}" enctype="multipart/form-data" id="uploadForm">
+    <div class="dropzone" data-input="fileInput">
+      <div style="font-size:36px;">📤</div>
+      <div style="font-weight:700;margin:6px 0;">Klik atau drag file ke sini</div>
+      <div style="font-size:12px;">PDF, DOC, XLS, PPT, TXT, CSV, JPG, PNG, ZIP — maks 50MB</div>
+      <div class="dz-info"></div>
+    </div>
+    <input type="file" id="fileInput" name="file" multiple hidden>
+    <div style="margin-top:12px;text-align:right;">
+      <button class="btn btn-primary" type="submit">Upload Sekarang</button>
+    </div>
+  </form>
+</div>
+
+<!-- File List -->
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <h3 style="margin:0;color:#091540;">📄 File ({{ files|length }})</h3>
+    <input type="text" placeholder="Cari file..." data-search="#tbl-file" style="max-width:200px;">
+  </div>
+  <table id="tbl-file">
+    <thead>
+      <tr><th>Nama</th><th>Type</th><th>Ukuran</th><th>Tanggal</th><th>Aksi</th></tr>
+    </thead>
+    <tbody>
+      {% for fl in files %}
+      <tr>
+        <td>{{ fl.nama }}</td>
+        <td><span class="badge" style="background:#eef1ff;color:#1B2CC1;">{{ fl.type }}</span></td>
+        <td>{{ fl.ukuran|filesize }}</td>
+        <td>{{ fl.tanggal.strftime('%d-%m-%Y %H:%M') if fl.tanggal else '-' }}</td>
+        <td>
+          <a class="btn btn-outline btn-sm" href="{{ url_for('file_download', id=fl.id) }}">⬇ Download</a>
+          <form method="POST" action="{{ url_for('file_delete', id=fl.id) }}" style="display:inline;"
+                data-confirm="Hapus file {{ fl.nama }}?">
+            <button class="btn btn-danger btn-sm" type="submit">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="text-align:center;color:#7a86a8;">Folder masih kosong.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

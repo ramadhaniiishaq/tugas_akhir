@@ -1,0 +1,302 @@
+/* =========================================
+   HEADER HALAMAN DETAIL FOLDER
+   ========================================= */
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #091540;
+}
+
+/* Link "Kembali ke Folder" */
+a[href*="folder"] {
+    transition: color 300ms ease;
+}
+
+/* Input rename folder */
+form[action*="rename"] input[type="text"] {
+    padding: 7px 12px;
+    border: 1px solid #c3c8f3;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #091540;
+    outline: none;
+    transition: all 300ms ease;
+}
+
+form[action*="rename"] input[type="text"]:focus {
+    border-color: #7692FF;
+    box-shadow: 0 0 0 3px rgba(118, 146, 255, 0.25);
+}
+
+/* =========================================
+   CARD
+   ========================================= */
+.card {
+    background-color: white;
+    border: 1px solid #c3c8f3;
+    box-shadow: 2px 5px 20px rgba(128, 128, 128, 0.35);
+    border-radius: 10px;
+    padding: 16px;
+}
+
+/* =========================================
+   DROPZONE (upload file)
+   ========================================= */
+.dropzone {
+    border: 2px dashed #7692FF;
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+    background-color: #f8f9ff;
+    color: #091540;
+    cursor: pointer;
+    transition: all 300ms ease-in-out;
+}
+
+.dropzone:hover {
+    background-color: #eef1ff;
+    border-color: #5a7bff;
+    box-shadow: 0 0 15px rgba(118, 146, 255, 0.35);
+}
+
+.dropzone.dragover {
+    background-color: #e0e6ff;
+    border-color: #5a7bff;
+    transform: scale(1.01);
+}
+
+.dropzone .dz-info {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #5a7bff;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+/* =========================================
+   TABLE FILE
+   ========================================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    color: #091540;
+}
+
+table thead th {
+    text-align: left;
+    padding: 10px 12px;
+    background-color: #eef1ff;
+    color: #1B2CC1;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #7692FF;
+}
+
+table thead th:first-child {
+    border-top-left-radius: 8px;
+}
+
+table thead th:last-child {
+    border-top-right-radius: 8px;
+}
+
+table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e6e8f5;
+    vertical-align: middle;
+}
+
+table tbody tr {
+    transition: background-color 200ms ease;
+}
+
+table tbody tr:hover {
+    background-color: #f8f9ff;
+}
+
+table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Nama file — potong jika panjang */
+table tbody td:first-child {
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+/* =========================================
+   BADGE (tipe file)
+   ========================================= */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* =========================================
+   SEARCH INPUT (cari file)
+   ========================================= */
+input[data-search] {
+    padding: 8px 12px;
+    border: 1px solid #c3c8f3;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #091540;
+    outline: none;
+    transition: all 300ms ease;
+}
+
+input[data-search]:focus {
+    border-color: #7692FF;
+    box-shadow: 0 0 0 3px rgba(118, 146, 255, 0.25);
+}
+
+/* =========================================
+   BUTTONS (sama seperti halaman folder)
+   ========================================= */
+.btn {
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-weight: 600;
+    transition: all 400ms ease-in;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background-color: #7692FF;
+    color: #091540;
+}
+
+.btn-primary:hover {
+    background-color: #5a7bff;
+    box-shadow: 0 0 10px #5a7bff;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid #7692FF;
+    color: #091540;
+}
+
+.btn-outline:hover {
+    background-color: #7692FF;
+    box-shadow: 0 0 10px rgba(118, 146, 255, 0.5);
+}
+
+.btn-danger {
+    background-color: #ff6b6b;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #ff4d4d;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
+}
+
+.btn-sm {
+    font-size: 12px;
+    padding: 5px 10px;
+}
+
+/* =========================================
+   RESPONSIF
+   ========================================= */
+@media (max-width: 640px) {
+    table {
+        font-size: 12px;
+    }
+
+    table thead th,
+    table tbody td {
+        padding: 8px 6px;
+    }
+
+    /* Sembunyikan kolom Type & Ukuran di HP supaya tidak sempit */
+    table thead th:nth-child(2),
+    table tbody td:nth-child(2),
+    table thead th:nth-child(3),
+    table tbody td:nth-child(3) {
+        display: none;
+    }
+
+    table tbody td:first-child {
+        max-width: 120px;
+    }
+
+    .dropzone {
+        padding: 20px 12px;
+    }
+}
+/* =========================================
+   BACK LINK (← Kembali ke Folder)
+   ========================================= */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1B2CC1;
+    text-decoration: none;
+    padding: 6px 12px 6px 8px;
+    border-radius: 20px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition: all 300ms ease-in-out;
+    width: fit-content;
+}
+
+.back-link .arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #eef1ff;
+    color: #1B2CC1;
+    font-size: 13px;
+    line-height: 1;
+    transition: all 300ms ease-in-out;
+}
+
+.back-link:hover {
+    background-color: #eef1ff;
+    color: #091540;
+    border-color: #c3c8f3;
+    padding-left: 10px;   /* efek geser sedikit */
+}
+
+.back-link:hover .arrow {
+    background-color: #7692FF;
+    color: white;
+    transform: translateX(-3px);
+}
+
+.back-link:active {
+    transform: scale(0.97);
+}
+
+/* Fokus keyboard (aksesibilitas) */
+.back-link:focus-visible {
+    outline: 2px solid #7692FF;
+    outline-offset: 2px;
+}

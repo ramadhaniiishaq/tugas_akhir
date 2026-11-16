@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Beranda — Sistem Arsip{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/user/dashboard.css')}}">
+
+<h2 class="page-title">Halo, {{ session.nama }} 👋</h2>
+<p style="color:#7a86a8;margin-top:-10px;font-size: 15px;">{{ session.jabatan }}</p>
+
+<div class="grid" style="margin:20px 0;">
+  <div class="stat"><h3>{{ folders|length }}</h3><p>Folder Saya</p></div>
+  <div class="stat" style="background:linear-gradient(135deg,#4a5cf0,#1B2CC1);"><h3>{{ total_file }}</h3><p>Total File</p></div>
+</div>
+  <div class="folder">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+    <h3 style="color:#091540;margin:0;">📂 Folder Saya</h3>
+    <a href="{{ url_for('folder') }}" class="btn btn-kelola">Kelola Folder</a>
+  </div>
+
+  <div class="grid-4">
+    {% for f in folders %}
+    <a class="folder-card" href="{{ url_for('folder_detail', id=f.id) }}">
+      <div class="folder-icon">📁</div>
+      <div class="folder-text">
+        <div class="folder-name">{{ f.nama }}</div>
+        <div class="folder-meta">{{ f.jumlah_file }} file • {{ f.tanggal.strftime('%d-%m-%Y') if f.tanggal else '-' }}</div>
+      </div>
+    </a>
+    {% else %}
+    <div class="card" style="grid-column:1/-1;text-align:center;color:#7a86a8;">
+      Belum ada folder. <a href="{{ url_for('folder') }}">Buat folder baru</a>.
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

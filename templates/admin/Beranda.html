@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Beranda — Sistem Arsip{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="../static/css/admin/beranda.css">
+<h2 class="page-title title">Beranda Admin</h2>
+
+<div class="grid grid-4 info" style="margin-bottom:20px;">
+  <div class="text">
+    <div class="text1">
+        orem Ipsum is simply dummy text of the 
+        printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at 
+        Letraset and James Mosley, the librarian at St Bride Printing Library in London, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. 
+        It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with 
+        desktop publishing <span>vdhcvedgvcvwgcvyedg</span> software like Aldus PageMaker and Microsoft Word including versions of Lorem Ipsum.
+    </div>
+  </div>
+  <div class="dekorasi">
+  </div>
+  <div class="item">
+    <div class="stat"><h3>{{ semua }}</h3><p>Total File</p></div>
+    <div class="stat"><h3>{{ files }}</h3><p><i class="bi bi-file-earmark-fill"></i>Dokumen</p></div>
+    <div class="stat"><h3>{{ image }}</h3><p>Gambar</p></div>
+    <div class="stat"><h3>{{ video }}</h3><p>Video</p></div>
+    <div class="stat" style="background:linear-gradient(135deg,#4a5cf0,#1B2CC1);"><h3>{{ folders }}</h3><p>Total Folder</p></div>
+  </div>
+</div>
+
+<div class="grid grid-3">
+  <div class="card">
+    <h3 style="margin-top:0;color:#091540;">📥 Upload Hari Ini</h3>
+    {% if data %}
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama</th>
+          <th>Type</th>
+          <th>Tanggal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in data %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ d.nama }}</td>
+          <td>{{ d.type }}</td>
+          <td>{{ d.tanggal }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="color:#7a86a8;font-size:13px;">Belum ada file diupload hari ini.</p>
+    {% endif %}
+  </div>
+
+  <div class="user">
+    <h3 style="margin-top:0;color:#091540;">👥 User Terdaftar</h3>
+    {% if user %}
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama</th>
+          <th>Jabatan</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in user %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ u.nama }}</td>
+          <td>{{ u.jabatan }}</td>
+          <td>
+            {% if u.status == 'aktif' %}
+            <span class="badge-aktif" style="background: green;">aktif</span>
+            {% elif u.status == 'nonaktif' %}
+            <span class="badge-nonaktif" style="background: red;">nonaktif</span>
+            {% else %}
+            <span>Lu siape mpruy</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="color:#7a86a8;font-size:13px;">Belum ada user.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

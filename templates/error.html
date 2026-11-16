@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Error {{ code }} — Sistem Arsip</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:20px;
+  box-sizing:border-box;
+}
+.error-box{
+  background:#fff;
+  padding:45px 35px;
+  border-radius:22px;
+  text-align:center;
+  box-shadow:0 25px 60px rgba(0,0,0,.45);
+  max-width:420px;
+  width:100%;
+  animation:fadeIn 500ms ease-out;
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.error-icon{
+  font-size:70px;
+  line-height:1;
+  margin-bottom:10px;
+  animation:bounceErr 1500ms infinite alternate;
+}
+@keyframes bounceErr{
+  0%{transform:translateY(-6px);}
+  100%{transform:translateY(6px);}
+}
+.error-code{
+  font-size:80px;
+  font-weight:900;
+  margin:0;
+  background:linear-gradient(135deg,#1B2CC1,#091540);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  line-height:1;
+  letter-spacing:-3px;
+}
+.error-msg{
+  color:#7a86a8;
+  font-size:15px;
+  margin:15px 0 25px;
+  line-height:1.5;
+}
+.error-actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.error-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:11px 22px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:13px;
+  transition:all 300ms ease;
+  border:none;
+  cursor:pointer;
+}
+.error-btn-primary{
+  background:linear-gradient(135deg,#1B2CC1,#091540);
+  color:#fff;
+}
+.error-btn-primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(27,44,193,.4);
+}
+.error-btn-outline{
+  background:transparent;
+  border:1.5px solid #1B2CC1;
+  color:#1B2CC1;
+}
+.error-btn-outline:hover{
+  background:#eef1ff;
+}
+.error-hint{
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px dashed #e2e6f2;
+  font-size:12px;
+  color:#9aa3bd;
+}
+</style>
+</head>
+<body>
+<div class="error-box">
+  <div class="error-icon">
+    {% if code == 403 %}🚫
+    {% elif code == 404 %}🔍
+    {% elif code == 500 %}💥
+    {% else %}⚠️
+    {% endif %}
+  </div>
+
+  <h1 class="error-code">{{ code }}</h1>
+  <p class="error-msg">{{ msg }}</p>
+
+  <div class="error-actions">
+    {% if session.get('role') %}
+      <a href="javascript:history.back()" class="error-btn error-btn-outline">← Kembali</a>
+      <a href="{% if session.role == 'admin' %}{{ url_for('dashboard') }}{% else %}{{ url_for('user_dashboard') }}{% endif %}" class="error-btn error-btn-primary">🏠 Ke Beranda</a>
+    {% else %}
+      <a href="{{ url_for('login') }}" class="error-btn error-btn-primary">🔑 Login</a>
+    {% endif %}
+  </div>
+
+  <div class="error-hint">
+    {% if code == 403 %}
+      Anda tidak memiliki izin untuk mengakses halaman ini.
+    {% elif code == 404 %}
+      Halaman yang Anda cari mungkin sudah dihapus atau dipindahkan.
+    {% elif code == 500 %}
+      Terjadi kesalahan pada server. Silakan coba beberapa saat lagi.
+    {% else %}
+      Terjadi kesalahan yang tidak diketahui.
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% block title %}Semua File{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/admin/file.css')}}"> 
+
+<h2 class="page-title title">Semua File</h2>
+
+<!-- ============ RINGKASAN GLOBAL ============ -->
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;background-color: #f3f4f6;box-shadow: 3px 5px 10px grey; padding: 10px; width: fit-content;border-radius: 5px;">
+  <span class="badge" style="background:#eef1ff;color:#1B2CC1;padding:8px 14px;font-size:13px;">
+    📄 Total: {{ jumlah_file }} file
+  </span>
+  <span class="badge" style="background:#d4f8e2;color:#08613a;padding:8px 14px;font-size:13px;">
+    💾 Total Ukuran: {{ total_ukuran|filesize }}
+  </span>
+  <span class="badge" style="background:#f5f7fd;color:#5c6bb3;padding:8px 14px;font-size:13px;">
+    📂 Folder: {{ folder1 }}
+  </span>
+</div>
+
+<!-- ============ KARTU STATISTIK PER TIPE ============ -->
+{% if per_type %}
+<div class="grid grid-4 container" style="margin-bottom:20px;">
+  {% for p in per_type %}
+  <div class="stat" 
+    {% if p.type == 'pdf' %} style="background: linear-gradient(135deg,red,rgb(175, 40, 40),black);"
+    {% elif p.type == 'xlsx' or p.type == 'xls'  %} style="background: linear-gradient(135deg,green,rgb(11, 78, 11),black);"
+    {% elif p.type == 'doc' or p.type == 'docx' %} style="background: linear-gradient(135deg,blue,rgb(17, 17, 146),black);"
+    {% elif p.type == 'ppt' or p.type == 'pptx' %} style="background: linear-gradient(135deg,orange,rgb(151, 106, 23),black);"
+    {% elif p.type == 'txt' %} style="background-color: #f3f4f6;"
+    {% elif p.type == 'jpg' or p.type == 'jpeg' or p.type == 'png' %} style="background:linear-gradient(135deg, #000080,black);"
+    {% elif p.type == 'zip' %} style="background:linear-gradient(135deg,#98FF98,#4e9c4e,black);"
+    {% elif p.type == 'rar' %} style="background:linear-gradient(145deg, #000080,white);"
+    {% endif %}
+  >
+    <h3>{{ p.jumlah }}</h3>
+    <p>{{ p.type|upper }} — {{ p.total|filesize }} ({{ p.persen }}%)</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="storage">
+{% if per_type %}
+<div class="card-bar" style="margin-bottom:20px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:15px;">
+    <h3 style="margin:0;color:#091540;">📊 Ukuran per Tipe File</h3>
+    <span style="font-size:12px;color:#7a86a8;">
+      Total: <b style="color:#091540;">{{ total_ukuran|filesize }}</b>
+    </span>
+  </div>
+
+  <div class="bar-chart">
+    {% for p in per_type %}
+      {% if p.total > 0 %}
+      <div class="bar-row" title="{{ p.type|upper }} — {{ p.jumlah }} file — {{ p.total|filesize }} ({{ p.persen }}%)">
+        <div class="bar-label">
+          <span class="bar-type">{{ p.type|upper }}</span>
+          <span class="bar-count">{{ p.jumlah }} file</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill"
+               data-persen="{{ p.persen }}"
+               style="background:linear-gradient(90deg, {{ loop.cycle('#1B2CC1','#4a5cf0','#6a78f5','#8a95f8','#a8b0fb','#c5cafc') }}, {{ loop.cycle('#091540','#1B2CC1','#4a5cf0','#6a78f5','#8a95f8','#a8b0fb') }});">
+          </div>
+        </div>
+        <div class="bar-value">
+          <b>{{ p.total|filesize }}</b>
+          <small>{{ p.persen }}%</small>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="storage-card">
+  <div class="storage-header">
+    <div>
+      <div class="storage-title">💾 Ruang Penyimpanan</div>
+      <div class="storage-subtitle">
+        {{ storage.terpakai|filesize }} dari {{ storage.total|filesize }} terpakai
+      </div>
+    </div>
+    <div class="storage-persen">{{ storage.persen }}%</div>
+  </div>
+
+  <div class="storage-bar">
+    <div class="storage-fill
+      {% if storage.persen >= 90 %}danger
+      {% elif storage.persen >= 70 %}warning
+      {% endif %}"
+      data-persen="{{ storage.persen }}"></div>
+  </div>
+
+  <div class="storage-legend">
+    <span class="legend-item">
+      <span class="legend-dot used"></span>
+      Terpakai: <b>{{ storage.terpakai|filesize }}</b>
+    </span>
+    <span class="legend-item">
+      <span class="legend-dot free"></span>
+      Sisa: <b>{{ storage.sisa|filesize }}</b>
+    </span>
+    <span class="legend-item">
+      <span class="legend-dot total"></span>
+      Total: <b>{{ storage.total|filesize }}</b>
+    </span>
+  </div>
+</div>
+</div>
+
+<!-- ============ FOLDER & DAFTAR FILE ============ -->
+<div class="tabel">
+  <div class="card-folder">
+    <h3 style="margin-top:0;color:#091540;">📂 Folder User</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: start;">Folder</th>
+          <th style="text-align: start;">Pemilik</th>
+          <th style="text-align:right;">File</th>
+          <th style="text-align:right;">Ukuran</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for f in folder %}
+        <tr>
+          <td>{{ f.folder_nama }}</td>
+          <td>{{ f.user_nama }}</td>
+          <td style="text-align:right;">{{ f.jml_file }}</td>
+          <td style="text-align:right;white-space:nowrap;">{{ f.total_ukuran|filesize }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" style="text-align:center;color:#7a86a8;">Belum ada folder.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-file">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+      <h3 style="margin:0;color:#091540;">
+        📄 Daftar File
+        <span style="font-size:13px;font-weight:normal;color:#7a86a8;margin-left:6px;">
+          — {{ jumlah_file }} file, total {{ total_ukuran|filesize }}
+        </span>
+      </h3>
+      <input type="text" placeholder="Cari file..." data-search="#tbl-file" style="max-width:200px;">
+    </div>
+
+    <table id="tbl-file">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama File</th>
+          <th>Pemilik</th>
+          <th>Folder</th>
+          <th>Type</th>
+          <th style="text-align:right;">Ukuran</th>
+          <th>Tanggal</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in data %}
+        <tr>
+          <td>{{loop.index}}</td>
+          <td>{{ d.nama_file }}</td>
+          <td>{{ d.nama_user }}</td>
+          <td style="color:#7a86a8;font-size:12.5px;">{{ d.folder_nama }}</td>
+          <td><span class="badge" style="background:#eef1ff;color:#1B2CC1;">{{ d.type_file|upper }}</span></td>
+          <td style="text-align:right;white-space:nowrap;">
+            {% if d.ukuran_file %}
+              {{ d.ukuran_file|filesize }}
+            {% else %}
+              <span style="color:#c0c5d6;font-style:italic;">—</span>
+            {% endif %}
+          </td>
+          <td style="white-space:nowrap;font-size:12.5px;color:#7a86a8;">
+            {{ d.tanggal_file.strftime('%d-%m-%Y') if d.tanggal_file else '-' }}
+          </td>
+          <td>
+            <a class="btn btn-outline btn-sm" href="{{ url_for('file_download', id=d.id) }}">⬇ Download</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" style="text-align:center;color:#7a86a8;">Belum ada file.</td></tr>
+        {% endfor %}
+      </tbody>
+
+      {% if data %}
+      <tfoot >
+        <tr style="background:#5c6bb3;font-weight:700;color:white;">
+          <td colspan="6" style="border-bottom: none; color: white;">TOTAL</td>
+          <td style="text-align:right;white-space:nowrap; border-bottom: none; color: white;">
+            {{ total_ukuran|filesize }}
+          </td>
+          <td style="border-bottom: none; color: white;"> 
+            {{ jumlah_file }} file
+          </td>
+        </tr>
+      </tfoot>
+      {% endif %}
+    </table>
+  </div>
+</div>
+
+<!-- ============ JS ANIMASI BAR CHART ============ -->
+<script>
+(function () {
+  'use strict';
+  window.requestAnimationFrame(function () {
+    document.querySelectorAll('.bar-fill').forEach(function (el) {
+      var persen = parseFloat(el.dataset.persen) || 0;
+      el.style.width = Math.max(persen, 2) + '%';
+    });
+  });
+})();
+</script>
+<script>
+  (function () {
+  var el = document.currentScript.parentElement.querySelector('.storage-fill');
+  if (!el) return;
+  window.requestAnimationFrame(function () {
+    var persen = parseFloat(el.dataset.persen) || 0;
+    el.style.width = Math.max(persen, 0.5) + '%';
+  });
+})();
+</script>
+{% endblock %}

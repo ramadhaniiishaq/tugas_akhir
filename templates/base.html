@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Sistem Arsip{% endblock %}</title>
+<link rel="stylesheet" href="../static/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.13.1/font/bootstrap-icons.css">
+{% block style %}
+{% endblock %}
+
+<style>
+.dropzone{border:2.5px dashed #b8c2e8;border-radius:14px;padding:30px;text-align:center;color:#5c6bb3;cursor:pointer;transition:.25s;background:#f8faff;}
+.dropzone:hover,.dropzone.drag{border-color:#1B2CC1;background:#eef1ff;color:#091540;}
+</style>
+</head>
+<body>
+
+{% if session.get('role') %}
+<nav>
+  <div class="nav-logo">
+    <img src="{{ url_for('static', filename='image/48515d9c5480294fba61ec069534e2f9-removebg-preview.png') }}" alt="Logo" onerror="this.style.display='none'">
+  </div>
+
+  <div class="nav-links">
+    {% if session.role == 'admin' %}
+      <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint=='dashboard' %}active{% endif %}">🏠 Beranda</a>
+      <a href="{{ url_for('user') }}" class="nav-link {% if request.endpoint=='user' %}active{% endif %}">👥 User</a>
+      <a href="{{ url_for('file') }}" class="nav-link {% if request.endpoint=='file' %}active{% endif %}">📄 File</a>
+    {% else %}
+      <a href="{{ url_for('user_dashboard') }}" class="nav-link {% if request.endpoint=='user_dashboard' %}active{% endif %}">🏠 Beranda</a>
+      <a href="{{ url_for('folder') }}" class="nav-link {% if request.endpoint=='folder' or request.endpoint=='folder_detail' %}active{% endif %}">📂 Folder</a>
+    {% endif %}
+    <a href="{{ url_for('profile') }}" class="nav-link {% if request.endpoint=='profile' %}active{% endif %}">⚙️ Profil</a>
+  </div>
+
+  <a href="{{ url_for('logout') }}" class="logout">🚪 Logout</a>
+</nav>
+
+<!-- dropdown profil -->
+<div class="user-dropdown" id="dropdown" style="display:none;">
+  <div style="font-weight:bold;color:#091540;">
+    {{ session.name if session.role=='admin' else session.nama }}
+  </div>
+  <div style="font-size:12px;color:#7a86a8;">
+    {{ session.jabatan }}
+  </div>
+  <hr style="border:none;border-top:1px solid #eef1f7;">
+  <a href="{{ url_for('profile') }}">⚙️ Pengaturan Profil</a>
+  <a href="{{ url_for('logout') }}" class="logout-dd">🚪 Logout</a>
+</div>
+
+<!-- ================= MAIN ================= -->
+<div class="up">
+<div class="up_logo">📁 Sistem Arsip</div>
+<div class="profile pro" id="profileToggle" style="cursor:pointer;user-select:none;">
+  <span>{{ session.name if session.role=='admin' else session.nama }}</span>
+  <div class="profile-image">
+    <img src="{{ url_for('static', filename='img/avatar.png') }}"
+         onerror="this.src='https://ui-avatars.com/api/?name={{ (session.name if session.role=='admin' else session.nama)|urlencode }}&background=1B2CC1&color=fff'">
+  </div>
+</div>
+</div>
+<main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat,msg in messages %}
+      <div class="alert alert-{{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  {% block content %}
+  {% endblock %}
+</main>
+
+<!-- ================= BOTTOM NAV (MOBILE) ================= -->
+<div class="bt-nav">
+  <div class="bt-links">
+    {% if session.role == 'admin' %}
+      <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint=='dashboard' %}active{% endif %}">🏠<br><small>Home</small></a>
+      <a href="{{ url_for('user') }}" class="{% if request.endpoint=='user' %}active{% endif %}">👥<br><small>User</small></a>
+      <a href="{{ url_for('file') }}" class="{% if request.endpoint=='file' %}active{% endif %}">📄<br><small>File</small></a>
+    {% else %}
+      <a href="{{ url_for('user_dashboard') }}" class="{% if request.endpoint=='user_dashboard' %}active{% endif %}">🏠<br><small>Home</small></a>
+      <a href="{{ url_for('folder') }}" class="{% if request.endpoint=='folder' or request.endpoint=='folder_detail' %}active{% endif %}">📂<br><small>Folder</small></a>
+    {% endif %}
+    <a href="{{ url_for('profile') }}" class="{% if request.endpoint=='profile' %}active{% endif %}">⚙️<br><small>Profil</small></a>
+  </div>
+</div>
+{% endif %}
+
+{% block js%}
+
+{% endblock %}
+<script>
+(function () {
+  'use strict';
+
+  // ============ 1. DROPDOWN PROFIL ============
+  document.addEventListener('click', function (e) {
+    var toggle = document.getElementById('profileToggle');
+    var dd = document.getElementById('dropdown');
+    if (!dd) return;
+
+    if (toggle && toggle.contains(e.target)) {
+      dd.style.display = dd.style.display === 'none' ? 'flex' : 'none';
+      e.stopPropagation();
+    } else if (!dd.contains(e.target)) {
+      dd.style.display = 'none';
+    }
+  });
+
+  // ============ 2. KONFIRMASI HAPUS ============
+  document.querySelectorAll('form[data-confirm]').forEach(function (f) {
+    f.addEventListener('submit', function (e) {
+      if (!confirm(f.dataset.confirm || 'Yakin ingin menghapus?')) {
+        e.preventDefault();
+      }
+    });
+  });
+
+  // ============ 3. UTIL: HUMAN SIZE ============
+  function humanSize(b) {
+    if (!b) return '0 B';
+    var u = ['B', 'KB', 'MB', 'GB'];
+    var i = 0;
+    while (b >= 1024 && i < u.length - 1) { b /= 1024; i++; }
+    return b.toFixed(1) + ' ' + u[i];
+  }
+
+  // ============ 4. DRAG & DROP UPLOAD ============
+  function showFiles(input, info) {
+    if (!info) return;
+    info.innerHTML = '';
+    Array.from(input.files).forEach(function (f) {
+      var div = document.createElement('div');
+      div.style.fontSize = '12px';
+      div.style.marginTop = '4px';
+      div.textContent = '📎 ' + f.name + ' (' + humanSize(f.size) + ')';
+      info.appendChild(div);
+    });
+  }
+
+  document.querySelectorAll('.dropzone').forEach(function (dz) {
+    var input = document.getElementById(dz.dataset.input);
+    var info = dz.querySelector('.dz-info');
+
+    dz.addEventListener('click', function () {
+      if (input) input.click();
+    });
+
+    dz.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      dz.classList.add('drag');
+    });
+
+    dz.addEventListener('dragleave', function () {
+      dz.classList.remove('drag');
+    });
+
+    dz.addEventListener('drop', function (e) {
+      e.preventDefault();
+      dz.classList.remove('drag');
+      if (input && e.dataTransfer.files.length) {
+        input.files = e.dataTransfer.files;
+        showFiles(input, info);
+      }
+    });
+
+    if (input) {
+      input.addEventListener('change', function () {
+        showFiles(input, info);
+      });
+    }
+  });
+
+  // ============ 5. LIVE SEARCH TABEL ============
+  document.querySelectorAll('[data-search]').forEach(function (inp) {
+    var target = document.querySelector(inp.dataset.search);
+    if (!target) return;
+    inp.addEventListener('input', function () {
+      var q = inp.value.toLowerCase();
+      target.querySelectorAll('tbody tr').forEach(function (tr) {
+        tr.style.display = tr.textContent.toLowerCase().indexOf(q) > -1 ? '' : 'none';
+      });
+    });
+  });
+
+  // ============ 6. AUTO HIDE FLASH MESSAGE ============
+  setTimeout(function () {
+    document.querySelectorAll('.alert').forEach(function (a) {
+      a.style.transition = 'opacity .5s';
+      a.style.opacity = '0';
+      setTimeout(function () { a.style.display = 'none'; }, 500);
+    });
+  }, 4000);
+
+})();
+</script>
+
+</body>
+</html>

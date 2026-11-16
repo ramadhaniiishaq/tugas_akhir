@@ -1,0 +1,239 @@
+/* =========================================================
+   INFO CARD (dashboard hero)
+   ========================================================= */
+.info{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    height: fit-content;
+    background: linear-gradient(to right, #1b2cc1,#091540);
+    padding: 10px;
+    padding-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 3px 5px 10px grey;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+}
+.info .text1 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: normal;
+    color: white;
+    width: 50%;
+    text-wrap: wrap;
+}
+.info .text1 span{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    color:white;
+}
+
+.info .dekorasi{
+    background-color: white;
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 100px;
+    margin-left: 87%;
+    border:#1b2cc1 solid 3px;
+    margin-bottom: 17%;
+    box-shadow: inset 5px 3px 5px grey;
+}
+.info .item{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.info .stat{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: rgba(255,255,255,0.12);
+    border: 2px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px) ;
+    -webkit-backdrop-filter: blur(10px) ;
+    color: rgb(248, 246, 246);
+    width: 300px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-family:  Arial;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+    transition: transform 500ms ease-in-out;
+}
+.info .stat:hover{
+    transform: translateY(-5px);
+}
+/* =========================================================
+   CARD (tabel file)
+   ========================================================= */
+.card {
+    background-color: #F3F4F6;
+    padding: 20px;
+    box-shadow: 3px 5px 20px rgba(128, 128, 128, 0.35);
+    border-radius: 10px;
+    /* PENTING: wrapper overflow untuk tabel */
+    overflow-x: auto;
+}
+
+.card table {
+    width: 100%;
+    min-width: 500px; /* supaya tabel tidak gepeng */
+    border-collapse: collapse;
+    border-bottom: 2px solid #1b2cc1;
+    font-size: 13px;
+}
+
+.card table th {
+    background-color: #1b2cc1;
+    color: white;
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+/* Border-radius hanya di ujung header */
+.card table thead tr th:first-child {
+    border-top-left-radius: 10px;
+}
+.card table thead tr th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.card table td {
+    border-bottom: 1px solid rgba(27, 44, 193, 0.4);
+    padding: 10px 8px;
+    font-weight: 600;
+    color: #091540;
+    vertical-align: middle;
+}
+
+.card table tbody tr {
+    transition: background-color 200ms ease;
+}
+
+.card table tbody tr:hover {
+    background-color: #e6e8ff;
+}
+
+/* =========================================================
+   USER TABLE WRAPPER
+   ========================================================= */
+.user {
+    background-color: #F3F4F6;
+    margin-top: 20px;
+    padding: 20px;
+    box-shadow: 3px 5px 20px rgba(128, 128, 128, 0.35);
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.user table {
+    width: 100%;
+    min-width: 500px;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.user table th {
+    background: #091540;
+    color: white;
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+.user table thead tr th:first-child {
+    border-top-left-radius: 10px;
+}
+.user table thead tr th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.user table td {
+    border-bottom: 1px solid rgba(9, 21, 64, 0.25);
+    padding: 10px 8px;
+    font-weight: 600;
+    color: #091540;
+    vertical-align: middle;
+}
+
+.user table tbody tr {
+    transition: background-color 200ms ease;
+}
+
+.user table tbody tr:hover {
+    background-color: #e0e4ff;
+}
+
+/* =========================================================
+   BADGE STATUS
+   ========================================================= */
+.badge-aktif,
+.badge-nonaktif {
+    display: inline-block;
+    color: white;
+    box-shadow: 2px 3px 10px rgba(128, 128, 128, 0.4);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+/* ⚠️ Dulu warnanya belum didefinisikan, sekarang dibedakan */
+.badge-aktif {
+    background-color: #22c55e;
+}
+
+.badge-nonaktif {
+    background-color: #ff6b6b;
+}
+
+/* =========================================================
+   RESPONSIF
+   ========================================================= */
+@media (max-width: 768px) {
+        .info .dekorasi{
+        transform: translatey(-500px) translateX(-100px);
+    }
+    .info .stat{
+        width: 150px;
+    }
+    .info .item{
+        justify-content: space-evenly;
+    }
+}
+    .card,
+    .user {
+        padding: 14px;
+    }
+
+@media (max-width: 480px) {
+
+    .card table,
+    .user table {
+        font-size: 12px;
+    }
+
+    .card table th,
+    .card table td,
+    .user table th,
+    .user table td {
+        padding: 8px 6px;
+    }
+}
